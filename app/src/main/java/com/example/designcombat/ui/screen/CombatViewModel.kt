@@ -1,17 +1,22 @@
 package com.example.designcombat.ui.screen
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.testcombat.data.model.SuperHeroAppearance
 import com.example.testcombat.data.model.SuperHeroBiography
 import com.example.testcombat.data.model.SuperHeroImage
 import com.example.testcombat.data.model.SuperHeroItem
 import com.example.testcombat.data.model.SuperHeroPowerStats
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
+lateinit var superHero1 : SuperHeroItem
+lateinit var superHero2 : SuperHeroItem
 
 @HiltViewModel
 class CombatViewModel @Inject constructor() : ViewModel() {
@@ -25,7 +30,7 @@ class CombatViewModel @Inject constructor() : ViewModel() {
 
 
     init {
-        val superHero1 = SuperHeroItem(
+        superHero1 = SuperHeroItem(
             id = "70", name = "Batman",
             powerStats = SuperHeroPowerStats(
                 intelligence = "100",
@@ -45,7 +50,7 @@ class CombatViewModel @Inject constructor() : ViewModel() {
             image = SuperHeroImage(url = "https://www.superherodb.com/pictures2/portraits/10/100/639.jpg")
         )
 
-        val superHero2 = SuperHeroItem(
+        superHero2 = SuperHeroItem(
             id = "644",
             name = "Superman",
             powerStats = SuperHeroPowerStats(
@@ -68,4 +73,34 @@ class CombatViewModel @Inject constructor() : ViewModel() {
         _superHeroPlayer.value = superHero1
         _superHeroCom.value = superHero2
     }
+
+    fun initAttack(){
+        _buttonEnable.value = false
+        viewModelScope.launch {
+            attackPlayer()
+            delay(5000)
+            attackCom()
+            _buttonEnable.value = true
+
+        }
+
+    }
+
+    private fun attackCom() {
+        var lifeCom = superHero1.powerStats.durability.toInt()
+        val strengthPlayer = superHero2.powerStats.strength.toInt()
+        lifeCom -= (strengthPlayer - 80)
+        superHero1.powerStats.durability = lifeCom.toString()
+        _superHeroPlayer.value = superHero1
+    }
+
+    private fun attackPlayer() {
+        var lifeCom = superHero2.powerStats.durability.toInt()
+        val strengthPlayer = superHero1.powerStats.strength.toInt()
+        lifeCom -= (strengthPlayer - 6)
+        superHero2.powerStats.durability = lifeCom.toString()
+        _superHeroCom.value = superHero2
+    }
+
+
 }
