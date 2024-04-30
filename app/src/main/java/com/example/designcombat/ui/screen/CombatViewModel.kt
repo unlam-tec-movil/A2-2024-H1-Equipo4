@@ -36,7 +36,7 @@ class CombatViewModel @Inject constructor() : ViewModel() {
                 intelligence = "100",
                 strength = "26",
                 speed = "27",
-                durability = "100",
+                durability = "300",
                 power = "47",
                 combat = "100"
             ),
@@ -57,7 +57,7 @@ class CombatViewModel @Inject constructor() : ViewModel() {
                 intelligence = "94",
                 strength = "100",
                 speed = "100",
-                durability = "100",
+                durability = "300",
                 power = "100",
                 combat = "85"
             ),
