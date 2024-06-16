@@ -19,6 +19,7 @@ import ar.edu.unlam.mobile.scaffolding.ui.screens.selectCharacterScreen.ui.viewM
 import ar.edu.unlam.mobile.scaffolding.ui.screens.superHeroCombatResultScreen.SuperHeroCombatResultScreen
 import ar.edu.unlam.mobile.scaffolding.ui.screens.superHeroCombatScreen.SuperHeroCombatScreen
 import ar.edu.unlam.mobile.scaffolding.ui.screens.superHeroDetailScreen.SuperHeroDetailScreen
+import ar.edu.unlam.mobile.scaffolding.ui.screens.test.ui.CacheTest
 import ar.edu.unlam.mobile.scaffolding.ui.theme.ScaffoldingV2Theme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -32,43 +33,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background,
                 ) {
-                    val navigationController = rememberNavController()
-                    val selectCharacterViewModel: SelectCharacterViewModel = hiltViewModel()
-                    NavHost(
-                        navController = navigationController,
-                        startDestination = Routes.CacheTest.route
-                    ) {
-
-                        composable(Routes.PresentationScreen.route) {
-                            PresentationScreen(navController = navigationController)
-                        }
-
-                        composable(Routes.SelectCharacterScreen.route) {
-                            SelectCharacterScreen(
-                                navController = navigationController,
-                                selectCharacterViewModel
-                            )
-                        }
-                        composable(Routes.SuperHeroCombatScreen.route) {
-                            SuperHeroCombatScreen(navController = navigationController)
-                        }
-
-                        composable(Routes.SuperHeroCombatResultScreen.route) {
-                            SuperHeroCombatResultScreen(navController = navigationController)
-                        }
-
-                        composable(Routes.SuperHeroDetailScreen.route) {
-                            SuperHeroDetailScreen(
-                                navController = navigationController,
-                                selectCharacterViewModel
-                            )
-                        }
-
-                        composable(Routes.SuperHeroRankedScreen.route) {
-                            SuperHeroRankedScreen(navController = navigationController)
-                        }
-
-                    }
+                    CacheTest()
 
                 }
             }
