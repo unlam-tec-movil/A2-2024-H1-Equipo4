@@ -7,4 +7,5 @@ sealed class Routes(val route : String){
     data object SuperHeroCombatResultScreen : Routes("SuperHeroCombatResultScreen")
     data object SuperHeroDetailScreen : Routes("SuperHeroDetailScreen")
     data object SuperHeroRankedScreen: Routes ("SuperHeroRankedScreen")
+    data object CacheTest : Routes("CacheTest")
 }

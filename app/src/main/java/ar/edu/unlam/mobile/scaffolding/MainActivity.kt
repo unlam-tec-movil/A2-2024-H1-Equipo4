@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
                     val selectCharacterViewModel: SelectCharacterViewModel = hiltViewModel()
                     NavHost(
                         navController = navigationController,
-                        startDestination = Routes.SelectCharacterScreen.route
+                        startDestination = Routes.CacheTest.route
                     ) {
 
                         composable(Routes.PresentationScreen.route) {
