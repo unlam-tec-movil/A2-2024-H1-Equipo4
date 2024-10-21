@@ -16,8 +16,9 @@ fun SuperHeroItem.toSuperHeroCombat(): SuperHeroCombat =
         life = calculateLife(this),
         damageAbs = damageAbs(this),
         damagePenance = damagePenance(this),
-        healingPotion = calculateHealing(this)
+        healingPotion = calculateHealing(this),
     )
+
 private fun calculateLife(superHero: SuperHeroItem): Int {
     val lifeFactor = 0.3
     val lifeFix = 300
@@ -26,8 +27,9 @@ private fun calculateLife(superHero: SuperHeroItem): Int {
     val heroLife = (listOf(intelligence, speed).average()).times(lifeFactor).roundToInt()
     return heroLife.plus(lifeFix)
 }
-private fun calculateAttack(superHero: SuperHeroItem): Int {
-    return if (superHero.id == "17") {
+
+private fun calculateAttack(superHero: SuperHeroItem): Int =
+    if (superHero.id == "17") {
         300
     } else {
         val attackFactor = 0.4
@@ -35,36 +37,38 @@ private fun calculateAttack(superHero: SuperHeroItem): Int {
         val power: Int = superHero.powerstats.power.toInt()
         (listOf(strength, power).average()).times(attackFactor).roundToInt()
     }
-}
+
 private fun calculateDefense(superHero: SuperHeroItem): Int {
     val defenseFactor = 0.30
     val durability: Int = superHero.powerstats.durability.toInt()
     val combat: Int = superHero.powerstats.combat.toInt()
     return (listOf(durability, combat).average()).times(defenseFactor).roundToInt()
 }
+
 private fun damageAbs(superHero: SuperHeroItem): Int {
     val bonus: Int =
         when (calculateDefense(superHero)) {
-            in 1..10 -> 1   // 2
-            in 11..20 -> 2  // 4
-            in 21..30 -> 3  // 6
+            in 1..10 -> 1 // 2
+            in 11..20 -> 2 // 4
+            in 21..30 -> 3 // 6
             else -> 0
         }
     return bonus
 }
-private fun damageAbsMax(superHero: SuperHeroItem): Int {
-    return calculateDefense(superHero).times(15.0).roundToInt()
-}
+
+private fun damageAbsMax(superHero: SuperHeroItem): Int = calculateDefense(superHero).times(15.0).roundToInt()
+
 private fun damagePenance(superHero: SuperHeroItem): Int {
     val penance: Int =
         when (calculateLife(superHero)) {
-            in 301..310 -> 0 //3
-            in 311..320 -> 1 //6
-            in 321..330 -> 2 //9
+            in 301..310 -> 0 // 3
+            in 311..320 -> 1 // 6
+            in 321..330 -> 2 // 9
             else -> 0
         }
     return penance
 }
+
 private fun calculateHealing(superHero: SuperHeroItem): Int {
     val superHeroLife = calculateLife(superHero)
     val percentFix = 0.2
@@ -72,9 +76,7 @@ private fun calculateHealing(superHero: SuperHeroItem): Int {
 }
 
 // Función solicitada para aleatorizar el valor de ataque que tendrán los héroes
-private fun directRandomAttack(attackValue: Int) : Int{
-    return Random.nextInt(1, attackValue.plus(1))
-}
+private fun directRandomAttack(attackValue: Int): Int = Random.nextInt(1, attackValue.plus(1))
 // antes de implementar directRandomAttack(), verificar que la funcionalidad de las especiales esté Ok.
 
 fun SuperHeroItem.repairImage(): SuperHeroItem {

@@ -20,121 +20,121 @@ private lateinit var playerListDefault: List<SuperHeroItem>
 private lateinit var comListDefault: List<SuperHeroItem>
 
 @HiltViewModel
-class SelectCharacterViewModel @Inject constructor(
-    private val getSuperHeroListByName: GetSuperHeroListByName,
-    private val setCombatDataScreen: SetCombatDataScreen,
-    private val setSuperHeroDetailUseCase: SetSuperHeroDetailUseCase,
-    private val getCombatBackgroundDataUseCase: GetCombatBackgroundDataUseCase,
-    private val networkUtils: NetworkUtils
-) : ViewModel() {
+class SelectCharacterViewModel
+    @Inject
+    constructor(
+        private val getSuperHeroListByName: GetSuperHeroListByName,
+        private val setCombatDataScreen: SetCombatDataScreen,
+        private val setSuperHeroDetailUseCase: SetSuperHeroDetailUseCase,
+        private val getCombatBackgroundDataUseCase: GetCombatBackgroundDataUseCase,
+        private val networkUtils: NetworkUtils,
+    ) : ViewModel() {
+        private val _isLoading = MutableStateFlow(true)
+        val isLoading = _isLoading.asStateFlow()
+        private val _superHeroListPlayer = MutableStateFlow<List<SuperHeroItem>>(emptyList())
+        val superHeroListPlayer = _superHeroListPlayer.asStateFlow()
+        private val _superHeroListCom = MutableStateFlow<List<SuperHeroItem>>(emptyList())
+        val superHeroListCom = _superHeroListCom.asStateFlow()
+        private val _playerSelected = MutableStateFlow<SuperHeroItem?>(null)
+        val playerSelected = _playerSelected.asStateFlow()
+        private val _comSelected = MutableStateFlow<SuperHeroItem?>(null)
+        val comSelected = _comSelected.asStateFlow()
+        private val _background = MutableStateFlow<Background?>(null)
+        val background = _background.asStateFlow()
+        private val _audioPosition = MutableStateFlow(0)
+        val audioPosition = _audioPosition.asStateFlow()
+        private val _backgroundData = MutableStateFlow<List<Background>>(emptyList())
+        val backgroundData = _backgroundData.asStateFlow()
+        private val _isInternetAvailable = MutableStateFlow(networkUtils.isInternetAvailable())
+        val isInternetAvailable = _isInternetAvailable.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading = _isLoading.asStateFlow()
-    private val _superHeroListPlayer = MutableStateFlow<List<SuperHeroItem>>(emptyList())
-    val superHeroListPlayer = _superHeroListPlayer.asStateFlow()
-    private val _superHeroListCom = MutableStateFlow<List<SuperHeroItem>>(emptyList())
-    val superHeroListCom = _superHeroListCom.asStateFlow()
-    private val _playerSelected = MutableStateFlow<SuperHeroItem?>(null)
-    val playerSelected = _playerSelected.asStateFlow()
-    private val _comSelected = MutableStateFlow<SuperHeroItem?>(null)
-    val comSelected = _comSelected.asStateFlow()
-    private val _background = MutableStateFlow<Background?>(null)
-    val background = _background.asStateFlow()
-    private val _audioPosition = MutableStateFlow(0)
-    val audioPosition = _audioPosition.asStateFlow()
-    private val _backgroundData = MutableStateFlow<List<Background>>(emptyList())
-    val backgroundData = _backgroundData.asStateFlow()
-    private val _isInternetAvailable = MutableStateFlow(networkUtils.isInternetAvailable())
-    val isInternetAvailable = _isInternetAvailable.asStateFlow()
-
-    init {
-        viewModelScope.launch {
-            delay(5000)
-            initListHero()
-            _isLoading.value = false
-        }
-    }
-
-    fun initListHero() {
-        _isInternetAvailable.value = networkUtils.isInternetAvailable()
-        viewModelScope.launch {
-            if (!isInternetAvailable.value) {
-                _isLoading.value = true
+        init {
+            viewModelScope.launch {
                 delay(5000)
-            }
-            playerListDefault = getSuperHeroListByName(getRandomList())
-            comListDefault = getSuperHeroListByName(getRandomList())
-            _superHeroListPlayer.value = playerListDefault
-            _superHeroListCom.value = comListDefault
-            _backgroundData.value = getCombatBackgroundDataUseCase()
-            if (!isInternetAvailable.value) {
+                initListHero()
                 _isLoading.value = false
             }
         }
-    }
 
-    private fun getRandomList(): String {
-        val randomList =
-            listOf("war", "iro","sup","dar","de","su", "ca", "ba", "sp", "go", "f", "hu", "ap", "man", "th", "ir", "dr", "do")
-        return randomList.random()
-
-    }
-
-    fun searchHeroByNameToPlayer(query: String) {
-        viewModelScope.launch {
-            val list = getSuperHeroListByName(query)
-            if (list.isNotEmpty()) {
-                _superHeroListPlayer.value = list
+        fun initListHero() {
+            _isInternetAvailable.value = networkUtils.isInternetAvailable()
+            viewModelScope.launch {
+                if (!isInternetAvailable.value) {
+                    _isLoading.value = true
+                    delay(5000)
+                }
+                playerListDefault = getSuperHeroListByName(getRandomList())
+                comListDefault = getSuperHeroListByName(getRandomList())
+                _superHeroListPlayer.value = playerListDefault
+                _superHeroListCom.value = comListDefault
+                _backgroundData.value = getCombatBackgroundDataUseCase()
+                if (!isInternetAvailable.value) {
+                    _isLoading.value = false
+                }
             }
         }
-    }
 
-    fun searchHeroByNameToCom(query: String) {
-        viewModelScope.launch {
-            val list = getSuperHeroListByName(query)
-            if (list.isNotEmpty()) {
-                _superHeroListCom.value = list
+        private fun getRandomList(): String {
+            val randomList =
+                listOf("war", "iro", "sup", "dar", "de", "su", "ca", "ba", "sp", "go", "f", "hu", "ap", "man", "th", "ir", "dr", "do")
+            return randomList.random()
+        }
+
+        fun searchHeroByNameToPlayer(query: String) {
+            viewModelScope.launch {
+                val list = getSuperHeroListByName(query)
+                if (list.isNotEmpty()) {
+                    _superHeroListPlayer.value = list
+                }
             }
         }
-    }
 
-    fun setCombatData(player: SuperHeroItem, com: SuperHeroItem, background: Background) {
-        setCombatDataScreen(player, com, background)
-    }
-
-    fun setPlayer(player: SuperHeroItem) {
-        if (player == _playerSelected.value) {
-            _playerSelected.value = null
-        } else {
-            _playerSelected.value = player
+        fun searchHeroByNameToCom(query: String) {
+            viewModelScope.launch {
+                val list = getSuperHeroListByName(query)
+                if (list.isNotEmpty()) {
+                    _superHeroListCom.value = list
+                }
+            }
         }
 
-    }
-
-    fun setCom(com: SuperHeroItem) {
-        if (com == _comSelected.value) {
-            _comSelected.value = null
-        } else {
-            _comSelected.value = com
+        fun setCombatData(
+            player: SuperHeroItem,
+            com: SuperHeroItem,
+            background: Background,
+        ) {
+            setCombatDataScreen(player, com, background)
         }
 
-    }
-
-    fun setBackground(background: Background) {
-        if (background == _background.value) {
-            _background.value = null
-        } else {
-            _background.value = background
+        fun setPlayer(player: SuperHeroItem) {
+            if (player == _playerSelected.value) {
+                _playerSelected.value = null
+            } else {
+                _playerSelected.value = player
+            }
         }
 
-    }
+        fun setCom(com: SuperHeroItem) {
+            if (com == _comSelected.value) {
+                _comSelected.value = null
+            } else {
+                _comSelected.value = com
+            }
+        }
 
+        fun setBackground(background: Background) {
+            if (background == _background.value) {
+                _background.value = null
+            } else {
+                _background.value = background
+            }
+        }
 
-    fun setSuperHeroDetail(hero: SuperHeroItem) {
-        setSuperHeroDetailUseCase(hero)
-    }
+        fun setSuperHeroDetail(hero: SuperHeroItem) {
+            setSuperHeroDetailUseCase(hero)
+        }
 
-    fun setAudioPosition(position: Int) {
-        _audioPosition.value = position + 1
+        fun setAudioPosition(position: Int) {
+            _audioPosition.value = position + 1
+        }
     }
-}
